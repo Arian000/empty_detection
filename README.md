@@ -86,6 +86,42 @@ curl -X POST -H "Content-Type: application/json" \
 
 The above command sends a POST request to the `/detect/` endpoint with a JSON payload that includes the base64-encoded contents of `image.jpg`. The response is printed to the console as a JSON object.
 
+Here's the C# code for making a POST request with curl:
+
+```csharp
+using System;
+using System.IO;
+using System.Net;
+
+class Program {
+    static void Main(string[] args) {
+        string url = "http://localhost:8000/detect/";
+        string imagePath = "image.jpg";
+        string encodedImage = Convert.ToBase64String(File.ReadAllBytes(imagePath));
+        string postData = "{\"image\": \"" + encodedImage + "\"}";
+
+        WebRequest request = WebRequest.Create(url);
+        request.Method = "POST";
+        request.ContentType = "application/json";
+        using (StreamWriter writer = new StreamWriter(request.GetRequestStream())) {
+            writer.Write(postData);
+        }
+
+        try {
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            using (StreamReader reader = new StreamReader(response.GetResponseStream())) {
+                string result = reader.ReadToEnd();
+                Console.WriteLine(result);
+            }
+        } catch (WebException ex) {
+            Console.WriteLine(ex.Message);
+        }
+    }
+}
+```
+
+This code reads an image file (`image.jpg`), encodes it as base64, and sends a JSON POST request to `http://localhost:8000/detect/`. The response from the server is printed to the console. Note that you will need to handle any exceptions that may occur during the request, such as network errors or invalid responses from the server.
+
 ## License
 
 This project is licensed under the MIT License. Feel free to use, modify, and distribute it as you see fit.

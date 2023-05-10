@@ -69,7 +69,17 @@ def image_registration_test(im_empty, im_test):
         print('sus')
         return False
 
+def detect(im_empty, im_test):
+    # test diff
+    diff_result = diff_test(im_empty, im_test)
 
+    # test registration
+    image_registration_result = image_registration_test(im_empty, im_test)
+
+    # TODO object detection test
+
+    return [diff_result, image_registration_result]
+    
 def main():
     # setup
     dataset_path = './captured/'
@@ -89,13 +99,10 @@ def main():
     # capture the photo
     im_test = capture_photo(dataset_path, f'photo_{t}.jpg')
 
-    # test diff
-    diff_result = diff_test(im_empty, im_test)
+    result = detect(im_empty, im_test)
+    print(result)
 
-    # test registration
-    image_registration_result = image_registration_test(im_empty, im_test)
-
-    # TODO object detection test
+    
 
 
 if __name__ == "__main__":

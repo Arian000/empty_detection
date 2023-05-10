@@ -19,7 +19,6 @@ im_empty = cv2.imread('photo_0.jpg')
 async def create_item(item: Item):
     img = np.array(Image.open(io.BytesIO(b64decode(item.image))))
     img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-    cv2.imwrite('te.jpg',img)
     result = detect(im_empty=im_empty , im_test=img)
     return result
 

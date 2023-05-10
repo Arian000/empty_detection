@@ -3,7 +3,20 @@ import numpy as np
 import time
 import os
 import imutils
+from ultralytics import YOLO
 
+def object_detection_test(im, conf=0.28, return_count=False):
+    cv2.imwrite('./captured/' + 'photo.jpg', im)
+    model = YOLO('yolov8x.pt')
+    results = model.predict('./captured/' + 'photo.jpg', conf=conf)
+    n_objects = results[0].__len__()
+    if return_count:
+        return n_objects
+    if n_objects > 1:
+        print('sus')
+        return False
+    print('empty')
+    return True
 
 def capture_photo(dataset_path='./captured/', filename='photo.jpg'):
     # Open the camera (0 is the default camera index)
@@ -45,7 +58,6 @@ def image_registration_test(im_empty, im_test):
     
     img1 = cv2.cvtColor(im_empty, cv2.COLOR_BGR2GRAY)
     img2 = cv2.cvtColor(im_test, cv2.COLOR_BGR2GRAY)
-    height, width = img2.shape
 
     orb_detector = cv2.ORB_create(5000)
     kp1, d1 = orb_detector.detectAndCompute(img1, None)
@@ -76,9 +88,10 @@ def detect(im_empty, im_test):
     # test registration
     image_registration_result = image_registration_test(im_empty, im_test)
 
-    # TODO object detection test
+    # object detection test
+    object_detection_result = object_detection_test(im_empty, im_test)
 
-    return [diff_result, image_registration_result]
+    return [diff_result, image_registration_result, object_detection_result]
     
 def main():
     # setup
